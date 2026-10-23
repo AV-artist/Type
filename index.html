@@ -3642,7 +3642,7 @@ evaluate();
 })();
 </script>
 <!--GH-UPDATER-START-->
-<script id="gh-updater-config" type="application/json">{"salt":"OaRPvV98aOegTOx6qTQ/Jw==","iv":"Yri2Ue0Q6pTJavE2","ct":"K5L9adiHJ4iSWAlye3v3/mf8H9SGeJved7FDBruZLXukUEdkKgtDuSscG4UmmBlSpxBnncBUbg67LzfT5+iBJUIGgPrSApKNqgI9PMcMQdT6CaUc7fe5Kr3U+/6QxH5cBLaTKyLT/QbMGeLH9Q==","iter":600000,"owner":"av-artist","repo":"Type","branch":"main","path":"index.html","q":"Who is your first crush?","salt2":"zDciM34Ft7Pl+SKX1Lri0g==","iv2":"jbqoGLAO5Oqxhe1d","ct2":"aPrJ0yZGwxN56NaD8+Td0H6aneiptzFEmui0S4fxrvEEwvkX7kNx1thMFDtx3EvBItssxkkKSwfKyL7VBhW8W4RQYAN1Y/qK+kxDjVDHgPby6/eP+LpSCAVc8AkHsE7FiXpUcg3psCmnXeW3Sg=="}</script>
+<script id="gh-updater-config" type="application/json">{"salt":"2q+/5XM0ZX83kmk5zo9mww==","iv":"pRCKeQurUbzDOsJf","ct":"PbafzDJUWWLYSOeNvIW8PrQIGsomTXy/bzYhAUbI/nlGyP71AZzXmXbx6Uoh8qT0eiC2BhIyxJXFAxRbwPXtPHy5IjYMMI9PLFtwMdl3C0cc6vKV6b3x7oKlwEJmeq2EbTrIOK9N9zqbPy1cjg==","iter":600000,"owner":"av-artist","repo":"Type","branch":"main","path":"index.html","q":"Who is your first crush?","salt2":"Y8Q10DKNewffVfmNpJ59sg==","iv2":"vGHzndNK+PfoJyLY","ct2":"3QFsh+GStcGYL1nycNimVBg/fYLwwrfKQ3p6EeI3lPZSBNpjmUEU79zOcGSL5HMYak0WgiS/+aMl4w10Cm7MMOzYo795cEYsfV+NVAiR8AWib6f1eFhZR0fu755ur7I8/TNMOP1fzWiwcj8N1w=="}</script>
 <script type="text/plain" id="gh-updater-tpl"><div id="gh-updater-root"></div>
 <script id="gh-updater-js">
 (function(){
@@ -3718,11 +3718,19 @@ try{var ac=new AbortController(),r=await fetch(u+(u.indexOf('?')<0?'?':'&')+'chk
 while(buf.length<30000){var x=await rd.read();if(x.done)break;buf+=dc.decode(x.value,{stream:true});if(buf.indexOf(st)>=0)break}
 ac.abort();if(buf.indexOf(st)>=0){log('Live! Reloading…');setTimeout(function(){location.reload()},600);return}}catch(e){}
 if(s>300){log('Taking longer than usual. Press Ctrl+F5 in a minute.');return}}}
+async function getSha(){var p=cfg.path,i=p.lastIndexOf('/'),d=i<0?'':p.slice(0,i),
+u='https://api.github.com/repos/'+cfg.owner+'/'+cfg.repo+'/contents'+(d?'/'+d.split('/').map(encodeURIComponent).join('/'):'')+'?ref='+encodeURIComponent(cfg.branch);
+var r=await fetch(u,{headers:HD()}),tx=await r.text();
+if(r.status===404)return undefined;
+if(!r.ok)throw new Error('GitHub replied '+r.status+': '+tx.slice(0,160));
+var j;try{j=JSON.parse(tx)}catch(e){throw new Error('GitHub sent an unexpected reply. Check the repo name and branch.')}
+if(!Array.isArray(j))return j&&j.sha;
+for(var k=0;k<j.length;k++)if(j[k].path===p)return j[k].sha;
+return undefined}
 async function commit(t,msg,after){
 var st=Date.now().toString(36);t=stampIt(t,st);
 log('Checking current version…');
-var r=await fetch(API()+'?ref='+encodeURIComponent(cfg.branch),{headers:HD()}),sha;
-if(r.status===200)sha=(await r.json()).sha;else if(r.status!==404)throw new Error('GitHub replied '+r.status+' (token expired or no access?)');
+var sha=await getSha();
 log('Encoding '+(t.length/1048576).toFixed(1)+' MB…');
 var c=await new Promise(function(ok,no){var fr=new FileReader();fr.onload=function(){ok(fr.result.split(',')[1])};fr.onerror=no;fr.readAsDataURL(new Blob([t]))});
 await put(JSON.stringify({message:msg+' '+new Date().toISOString(),content:c,sha:sha,branch:cfg.branch}));
@@ -3845,11 +3853,19 @@ try{var ac=new AbortController(),r=await fetch(u+(u.indexOf('?')<0?'?':'&')+'chk
 while(buf.length<30000){var x=await rd.read();if(x.done)break;buf+=dc.decode(x.value,{stream:true});if(buf.indexOf(st)>=0)break}
 ac.abort();if(buf.indexOf(st)>=0){log('Live! Reloading…');setTimeout(function(){location.reload()},600);return}}catch(e){}
 if(s>300){log('Taking longer than usual. Press Ctrl+F5 in a minute.');return}}}
+async function getSha(){var p=cfg.path,i=p.lastIndexOf('/'),d=i<0?'':p.slice(0,i),
+u='https://api.github.com/repos/'+cfg.owner+'/'+cfg.repo+'/contents'+(d?'/'+d.split('/').map(encodeURIComponent).join('/'):'')+'?ref='+encodeURIComponent(cfg.branch);
+var r=await fetch(u,{headers:HD()}),tx=await r.text();
+if(r.status===404)return undefined;
+if(!r.ok)throw new Error('GitHub replied '+r.status+': '+tx.slice(0,160));
+var j;try{j=JSON.parse(tx)}catch(e){throw new Error('GitHub sent an unexpected reply. Check the repo name and branch.')}
+if(!Array.isArray(j))return j&&j.sha;
+for(var k=0;k<j.length;k++)if(j[k].path===p)return j[k].sha;
+return undefined}
 async function commit(t,msg,after){
 var st=Date.now().toString(36);t=stampIt(t,st);
 log('Checking current version…');
-var r=await fetch(API()+'?ref='+encodeURIComponent(cfg.branch),{headers:HD()}),sha;
-if(r.status===200)sha=(await r.json()).sha;else if(r.status!==404)throw new Error('GitHub replied '+r.status+' (token expired or no access?)');
+var sha=await getSha();
 log('Encoding '+(t.length/1048576).toFixed(1)+' MB…');
 var c=await new Promise(function(ok,no){var fr=new FileReader();fr.onload=function(){ok(fr.result.split(',')[1])};fr.onerror=no;fr.readAsDataURL(new Blob([t]))});
 await put(JSON.stringify({message:msg+' '+new Date().toISOString(),content:c,sha:sha,branch:cfg.branch}));
