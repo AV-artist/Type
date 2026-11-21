@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en"><head><!--gh-v:mwqtvl0m--><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<html lang="en"><head><!--gh-v:mwqusgih--><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="icon" type="image/svg+xml"
@@ -1448,7 +1448,7 @@ header{padding-right:310px}
     <div class="passage-command" role="group" aria-label="Passage management">
 <div class="command-field search-field"><button id="searchPassages" type="button" title="Search saved passages" aria-label="Search saved passages"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg></button><input id="passageSearch" type="search" aria-label="Search passages" placeholder="Search passages…"><button id="clearSearch" type="button" title="Clear search" aria-label="Clear search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div>
 <div class="command-field name-field"><span class="command-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 4H5v16h14v-8M9 15l1-4 8-8 3 3-8 8z"/></svg></span><input id="passageName" type="text" aria-label="Assign new passage name" maxlength="60" autocomplete="off" placeholder="Assign new passage name…"></div>
-<button class="command-upload" type="button" id="uploadTrigger" title="Upload TXT passage" aria-label="Upload TXT passage"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V3m-5 5 5-5 5 5M4 15v5h16v-5"/></svg><span>Upload TXT</span></button><input type="file" id="importPassage" accept=".txt,text/plain" hidden>
+<input type="file" id="importPassage" accept=".txt,text/plain" hidden>
 <button id="save" class="command-save" type="button" title="Save passage" aria-label="Save passage"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 3h13l4 4v14H3V3zM7 3v7h10V3M7 21v-7h10v7"/></svg><span>Save</span></button></div>
     <div class="save-row">
       <button id="bake" class="bake" type="button">🔥 Bake &amp; overwrite this file</button>
@@ -3269,7 +3269,7 @@ $('drillMin').addEventListener('change',()=>{ const v=getDrillMinutes(); $('dril
 $('passageSearch').addEventListener('input',renderSaved);
 $('searchPassages').onclick=renderSaved;
 $('clearSearch').onclick=()=>{$('passageSearch').value='';renderSaved();};
-$('uploadTrigger').onclick=()=>$('importPassage').click();
+
 $('importPassage').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{$('source').value=await f.text();$('passageName').value=f.name.replace(/\.txt$/i,'');evaluate();}catch(err){alert('Could not read this file.');}e.target.value='';};
 /* Initial render */
 renderSaved();
